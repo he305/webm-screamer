@@ -43,7 +43,7 @@ def check_max_file_size(size):
 def download_video(url):
 	parsed_url = urlparse(url)
 
-	req = requests.get(url, timeout=120, stream=True)
+	req = requests.get(url, timeout=300, stream=True)
 	if (req.status_code != 200):
 		raise Exception('Got code %s while trying to retrieve URL' % req.status_code)
 
@@ -109,7 +109,7 @@ def analyze_video(filename):
 	data = None
 	cmd = shlex.split('ffmpeg -hide_banner -filter_complex "ebur128=dualmono=true" -f null - -i "%s"' % filename)
 	with NamedTemporaryFile(prefix='ffmpeg_ebur128', mode="w+", encoding='utf-8') as ffmpeg_output:
-		subprocess.run(cmd, stdout=ffmpeg_output, stderr=ffmpeg_output, timeout=120)
+		subprocess.run(cmd, stdout=ffmpeg_output, stderr=ffmpeg_output, timeout=300)
 		ffmpeg_output.seek(0)
 		data = parse_ffmpeg_output(ffmpeg_output)
 
