@@ -192,5 +192,4 @@ def get_data(url):
 	data = {}
 	data['md5'] = url['md5']
 	data['scream_chance'] = analyze_video(download_video(url['url']).name)
-	print(data)
 	return data
