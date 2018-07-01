@@ -3,9 +3,11 @@ from detector import get_data
 import json
 import multiprocessing
 from flask import jsonify
+from flask_cors import CORS
 
 
 app = Flask(__name__)
+CORS(app)
 pool = None
 
 @app.route("/api/", methods=['GET', 'POST'])
