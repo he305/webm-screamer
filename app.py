@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify
-from detector import get_data
 import json
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -17,7 +16,8 @@ class WEBM(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     md5 = db.Column(db.String(150), unique=True, nullable=False)
     screamer_chance = db.Column(db.Float, unique=False, nullable=False)
-    
+
+from detector import get_data    
 
 @app.route("/api/", methods=['GET', 'POST'])
 def hello():
