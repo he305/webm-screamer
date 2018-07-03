@@ -5,9 +5,9 @@ import subprocess
 import re
 import math
 import os
-
 from tempfile import NamedTemporaryFile
 
+from app import WEBM, db
 
 MIN_SIZE = 1024
 MAX_SIZE = 50*1024*1024
@@ -192,4 +192,7 @@ def get_data(url):
 	data = {}
 	data['md5'] = url['md5']
 	data['scream_chance'] = analyze_video(download_video("http://2ch.hk" + url['url']).name)
+	webm = WEBM(url['md5'], data['scream_chance'])
+	db.session.add(webm)
+	db.session.commit()
 	return data

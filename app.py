@@ -1,19 +1,32 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from detector import get_data
 import json
-from flask import jsonify
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 CORS(app)
+
+db = SQLAlchemy(app)
+
+class WEBM(db.Model):
+    __tablename__ =  'webms'
+    id = db.Column(db.Integer, primary_key=True)
+    md5 = db.Column(db.String(150), unique=True, nullable=False)
+    screamer_chance = db.Column(db.Float, unique=False, nullable=False)
+    
 
 @app.route("/api/", methods=['GET', 'POST'])
 def hello():
     jobs = []
     return_dict = {}
     content = request.get_json()
-    data = get_data(content)
+    data = WEBM.query.filter_by(md5=content['md5']).first()
+    if (data is None):
+        data = get_data(content)
+
 
     print(data)
     return jsonify(data)
