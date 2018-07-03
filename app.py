@@ -16,6 +16,10 @@ class WEBM(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     md5 = db.Column(db.String(150), unique=True, nullable=False)
     screamer_chance = db.Column(db.Float, unique=False, nullable=False)
+    
+    def __init__(self, md5=None, screamer_chance=None):
+        self.md5 = md5
+        self.screamer_chance = screamer_chance
 
 from detector import get_data    
 
