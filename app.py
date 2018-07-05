@@ -28,9 +28,13 @@ def hello():
     jobs = []
     return_dict = {}
     content = request.get_json()
+    webm = None
     webm = WEBM.query.filter_by(md5=content['md5']).first()
     if (webm is None):
         data = get_data(content)
+        webm = WEBM(data['md5'], data['scream_chance'])
+        db.session.add(webm)
+        db.session.commit()
     else:
         data = {}
         data['md5'] = webm.md5
