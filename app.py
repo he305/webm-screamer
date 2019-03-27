@@ -42,8 +42,8 @@ def hello():
 
 
     print(data)
-    print(json.dumps(data))
-    return json.dumps(data)
+    print(jsonify(data))
+    return jsonify(data)
 
 if __name__ == "__main__":
     app.run()
