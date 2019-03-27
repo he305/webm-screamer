@@ -37,11 +37,12 @@ def hello():
         db.session.commit()
     else:
         data = {}
-        data['md5'] = webm.md5
-        data['scream_chance'] = webm.screamer_chance
+        data["md5"] = webm.md5
+        data["scream_chance"] = webm.screamer_chance
 
 
     print(data)
+    print(json.dumps(data))
     return json.dumps(data)
 
 if __name__ == "__main__":
