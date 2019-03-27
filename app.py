@@ -25,8 +25,6 @@ from detector import get_data
 
 @app.route("/api/", methods=['GET', 'POST'])
 def hello():
-    jobs = []
-    return_dict = {}
     content = request.get_json()
     webm = None
     webm = WEBM.query.filter_by(md5=content['md5']).first()
@@ -41,7 +39,6 @@ def hello():
         data["scream_chance"] = webm.screamer_chance
 
 
-    print(data)
     print(jsonify(data))
     return jsonify(data)
 
