@@ -1,13 +1,15 @@
 from flask import Flask, request, jsonify
 import json
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from flask_sqlalchemy import SQLAlchemy
 import os
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-CORS(app)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
 
 db = SQLAlchemy(app)
 
@@ -23,7 +25,8 @@ class WEBM(db.Model):
 
 from detector import get_data    
 
-@app.route("/api/", methods=['GET', 'POST'])
+@app.route("/api/", methods=['POST'])
+@cross_origin()
 def hello():
     content = request.get_json()
     webm = None
@@ -38,9 +41,13 @@ def hello():
         data["md5"] = webm.md5
         data["scream_chance"] = webm.screamer_chance
 
-
     print(jsonify(data))
     return jsonify(data)
+
+@app.after_request
+def add_header(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
 
 if __name__ == "__main__":
     app.run()
