@@ -36,7 +36,7 @@ def download_video(url):
 
 def analyze_video(filename):
 	data = None
-	cmd = shlex.split('ffmpeg -hide_banner -vn -filter_complex "ebur128=dualmono=true" -f null - -i "%s"' % filename.name)
+	cmd = shlex.split('ffmpeg -hide_banner -vn -filter_complex "ebur128=dualmono=true" -f null - -i "%s"' % filename)
 	with NamedTemporaryFile(prefix='ffmpeg_ebur128', mode="w+", encoding='utf-8') as ffmpeg_output:
 		subprocess.run(cmd, stdout=ffmpeg_output, stderr=ffmpeg_output, timeout=300)
 		ffmpeg_output.seek(0)
@@ -47,7 +47,7 @@ def analyze_video(filename):
 		
 		raise Exception("Can't parse file as video")
 
-	os.remove(filename.name)
+	os.remove(filename)
 	return data
 
 def determine_scream_chance(parsed):
