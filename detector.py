@@ -7,29 +7,17 @@ import math
 import os
 from tempfile import NamedTemporaryFile
 
-MIN_SIZE = 1024
-MAX_SIZE = 50*1024*1024
-
 ACCEPT_MIMETYPES = [None, 'video/webm', 'video/mp4']
-CHUNK_SIZE = 1024
 
 LOUD = -12.0  # if bigger Just loud, most likely not annoying YELLOW  %50
 SCREAM = -5.0  # Very loud, if bigger 80% scream ORANGE
 DEFENITLY_SCREAM = -0.5  #if bigger then 100% scream RED
 
 
-def check_min_file_size(size):
-	if (size < MIN_SIZE):
-		raise Exception('File is too small')
-
-def check_max_file_size(size):
-	if (size > MAX_SIZE):
-		raise Exception('File is too large')
-
 def download_video(url):
 	parsed_url = urlparse(url)
 
-	req = requests.get(url, timeout=300, stream=True)
+	req = requests.get(url, timeout=300)
 	if (req.status_code != 200):
 		raise Exception('Got code %s while trying to retrieve URL' % req.status_code)
 
@@ -37,23 +25,18 @@ def download_video(url):
 		raise Exception('Unsupported content MIME type')
 
 	url_name = parsed_url.path.split('/')[-1] if (not parsed_url.path.endswith('/')) else 'video'
+	
+	temp_file = None
 
-	temp_file = NamedTemporaryFile(prefix=url_name, delete=False)
-
-	content_size = 0
-	for chunk in req.iter_content(CHUNK_SIZE):
-		content_size += len(chunk)
-		check_max_file_size(content_size)
-		temp_file.write(chunk)
-
-	check_min_file_size(content_size)
+	with open(url_name, 'wb') as temp_file:
+	    temp_file.write(req.content)
 
 	return temp_file
 
 
 def analyze_video(filename):
 	data = None
-	cmd = shlex.split('ffmpeg -hide_banner -vn -filter_complex "ebur128=dualmono=true" -f null - -i "%s"' % filename)
+	cmd = shlex.split('ffmpeg -hide_banner -vn -filter_complex "ebur128=dualmono=true" -f null - -i "%s"' % filename.name)
 	with NamedTemporaryFile(prefix='ffmpeg_ebur128', mode="w+", encoding='utf-8') as ffmpeg_output:
 		subprocess.run(cmd, stdout=ffmpeg_output, stderr=ffmpeg_output, timeout=300)
 		ffmpeg_output.seek(0)
@@ -64,7 +47,7 @@ def analyze_video(filename):
 		
 		raise Exception("Can't parse file as video")
 
-	os.remove(filename)
+	os.remove(filename.name)
 	return data
 
 def determine_scream_chance(parsed):
