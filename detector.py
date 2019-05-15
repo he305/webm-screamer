@@ -67,6 +67,7 @@ def parse_ffmpeg_output(file):
 
 	line_reg = re.compile(r"\[Parsed_ebur128_\d @ [0-9a-z]{2,16}\]\s+"
 						  "t:\s*([\d.]+)\s+"  # Current time in seconds
+						  "TARGET:\s*([-\d]+)\s+LUFS\s+"
 						  "M:\s*([-\d.]+)\s+"  # Momentary (0.4 sec)
 						  "S:\s*([-\d.]+)\s+"  # Short-Term (3 sec)
 						  "I:\s*([-\d.]+) LUFS\s+"  # Integrated
